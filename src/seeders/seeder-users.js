@@ -20,9 +20,10 @@ module.exports = {
         address: "Việt Nam",
         phoneNumber: "0376971481",
         gender: "1",
-        image: "DataTypes.STRING",
-        typeRole: "Role",
-        keyRole: "R1",
+        image:
+          "https://khanhkhiem.com/wp-content/uploads/2017/12/anh-thien-nhien-dep.jpeg",
+        roleId: "Role",
+        positionId: "Master",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
