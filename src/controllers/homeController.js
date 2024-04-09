@@ -1,4 +1,3 @@
-import express from "express";
 import db from "../models/index";
 let getHomePage = async (req, res) => {
   try {
