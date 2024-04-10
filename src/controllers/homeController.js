@@ -10,21 +10,47 @@ let getHomePage = async (req, res) => {
     console.log(error);
   }
 };
-let getCRUD = (req, res) => {
+let getCRUD = async (req, res) => {
+  let data = await CRUDServices.getAllUser();
+  return res.render("./test/get-crud.ejs", {
+    dataTable: data,
+  });
+};
+let createCRUD = (req, res) => {
   try {
     return res.render("./test/crud.ejs");
   } catch (error) {}
 };
-let postCRUD = async (req, res) => {
+let addCRUD = async (req, res) => {
   try {
     // console.log(req.body);
     await CRUDServices.createNewUser(req.body);
-    return res.send("add a new user");
   } catch (error) {}
 };
+let editCRUD = async (req, res) => {
+  let userId = req.query.id;
+  if (userId) {
+    let userData = await CRUDServices.getUserInfoById(userId);
+    // check user data not found
 
+    return res.render("./test/edit-crud.ejs", {
+      userEdit: userData,
+    });
+  }
+  return res.send("Users not found!");
+};
+let updateCRUD = async (req, res) => {
+  let data = req.body;
+  let allUser = await CRUDServices.updateUserData(data);
+  return res.render("./test/get-crud.ejs", {
+    dataTable: allUser,
+  });
+};
 module.exports = {
   getHomePage: getHomePage,
   getCRUD: getCRUD,
-  postCRUD: postCRUD,
+  createCRUD: createCRUD,
+  addCRUD: addCRUD,
+  editCRUD: editCRUD,
+  updateCRUD: updateCRUD,
 };

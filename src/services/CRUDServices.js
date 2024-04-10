@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import db from "../models/index";
+import { where } from "sequelize";
 let createNewUser = async (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -20,7 +21,56 @@ let createNewUser = async (data) => {
     }
   });
 };
-
+let getAllUser = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let users = await db.User.findAll({
+        raw: true,
+      });
+      resolve(users);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let getUserInfoById = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = await db.User.findOne({
+        where: { id: userId },
+        raw: true,
+      });
+      if (user) {
+        resolve(user);
+      } else {
+        resolve({});
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let updateUserData = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = await db.User.findOne({
+        where: { id: data.id },
+      });
+      if (user) {
+        user.fullName = data.fullName;
+        user.phoneNumber = data.phoneNumber;
+        user.address = data.address;
+        await user.save();
+        let allUser = await db.User.findAll();
+        resolve(allUser);
+      } else {
+        resolve();
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 let hashUserPassword = (password) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -33,4 +83,7 @@ let hashUserPassword = (password) => {
 };
 module.exports = {
   createNewUser: createNewUser,
+  getAllUser: getAllUser,
+  getUserInfoById: getUserInfoById,
+  updateUserData: updateUserData,
 };
