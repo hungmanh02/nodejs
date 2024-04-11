@@ -8,6 +8,7 @@ let initWebRoutes = (app) => {
   router.post("/add-crud", homeController.addCRUD);
   router.get("/edit-crud", homeController.editCRUD);
   router.post("/update-crud", homeController.updateCRUD);
+  router.get("/delete-crud", homeController.deleteCRUD);
   // rest api
   return app.use("/", router);
 };
