@@ -8,7 +8,7 @@ let handleLogin = async (req, res) => {
       message: "Missing inputs parameter!",
     });
   }
-  let userData = await handleUserLogin(email, password);
+  let userData = await userServices.handleUserLogin(email, password);
   // 1. check email exist
   // 2. compare password
   // 3. return userInfor
@@ -16,8 +16,8 @@ let handleLogin = async (req, res) => {
   return res.status(200).json({
     errCode: userData.errCode,
     message: userData.errMessage,
-    userData,
-    // user: userData.user ? userData.user : {},
+
+    user: userData.user ? userData.user : {},
   });
 };
 
