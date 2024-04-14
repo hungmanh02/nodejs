@@ -1,4 +1,20 @@
 import userServices from "../services/userServices";
+let handleGetAllUsers = async (req, res) => {
+  let id = req.body.id; // ALL, SINGLE
+  if (!id) {
+    return res.status(200).json({
+      errCode: 1,
+      errMessage: "Missing required parameters",
+      users: [],
+    });
+  }
+  let users = await userServices.getAllUsers(id);
+  return res.status(200).json({
+    errCode: 0,
+    errMessage: "OK",
+    users,
+  });
+};
 let handleLogin = async (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
@@ -23,4 +39,5 @@ let handleLogin = async (req, res) => {
 
 module.exports = {
   handleLogin: handleLogin,
+  handleGetAllUsers: handleGetAllUsers,
 };
