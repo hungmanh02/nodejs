@@ -1,6 +1,7 @@
 import { where } from "sequelize";
 import db from "../models/index";
 import bcrypt from "bcryptjs";
+import { raw } from "body-parser";
 const salt = bcrypt.genSaltSync(10);
 let handleUserLogin = (email, password) => {
   return new Promise(async (resolve, reject) => {
@@ -129,8 +130,45 @@ let createNewUser = (data) => {
     }
   });
 };
-let EditUser = () => {};
-let DeleteUser = (userId) => {
+let editUser = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.id) {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing required parameters !",
+        });
+      }
+      let user = await db.User.findOne({
+        where: { id: data.id },
+        raw: false,
+      });
+      if (user) {
+        user.fullName = data.fullName;
+        user.phoneNumber = data.phoneNumber;
+        user.address = data.address;
+        // await db.User.save({
+        //   fullName: data.fullName,
+        //   phoneNumber: data.phoneNumber,
+        //   address: data.address,
+        // });
+        await user.save();
+        resolve({
+          errCode: 0,
+          errMessage: "Up data user success !",
+        });
+      } else {
+        resolve({
+          errCode: 1,
+          errMessage: "User not found !",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let deleteUser = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
       let user = await db.User.findOne({
@@ -144,7 +182,11 @@ let DeleteUser = (userId) => {
           errMessage: `The user isn't exisst`,
         });
       }
-      await user.destroy();
+      await db.User.destroy({
+        where: {
+          id: userId,
+        },
+      });
       resolve({
         errCode: 0,
         errMessage: "The user is deleted",
@@ -159,6 +201,6 @@ module.exports = {
   handleUserLogin: handleUserLogin,
   getAllUsers: getAllUsers,
   createNewUser: createNewUser,
-  editUser: EditUser,
-  deleteUser: DeleteUser,
+  editUser: editUser,
+  deleteUser: deleteUser,
 };
