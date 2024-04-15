@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import db from "../models/index";
 import bcrypt from "bcryptjs";
 const salt = bcrypt.genSaltSync(10);
@@ -102,7 +103,6 @@ let createNewUser = (data) => {
     try {
       // check email is exist??
       let check = await checkUserEmail(data.email);
-      console.log(check);
       if (check === true) {
         resolve({
           errCode: 1,
@@ -129,9 +129,36 @@ let createNewUser = (data) => {
     }
   });
 };
+let EditUser = () => {};
+let DeleteUser = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let user = await db.User.findOne({
+        where: {
+          id: userId,
+        },
+      });
+      if (!user) {
+        resolve({
+          errCode: 1,
+          errMessage: `The user isn't exisst`,
+        });
+      }
+      await user.destroy();
+      resolve({
+        errCode: 0,
+        errMessage: "The user is deleted",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 module.exports = {
   handleUserLogin: handleUserLogin,
   getAllUsers: getAllUsers,
   createNewUser: createNewUser,
+  editUser: EditUser,
+  deleteUser: DeleteUser,
 };
