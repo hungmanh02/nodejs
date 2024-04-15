@@ -1,5 +1,6 @@
 import db from "../models/index";
 import bcrypt from "bcryptjs";
+const salt = bcrypt.genSaltSync(10);
 let handleUserLogin = (email, password) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -36,6 +37,16 @@ let handleUserLogin = (email, password) => {
         userData.errMessage = `Your's Email ison't exist your system .Plz try other email`;
       }
       resolve(userData);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+let hashUserPassword = (password) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      var hashPassword = await bcrypt.hashSync(password);
+      resolve(hashPassword);
     } catch (error) {
       reject(error);
     }
@@ -86,7 +97,41 @@ let getAllUsers = (userId) => {
     }
   });
 };
+let createNewUser = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // check email is exist??
+      let check = await checkUserEmail(data.email);
+      console.log(check);
+      if (check === true) {
+        resolve({
+          errCode: 1,
+          errMessage: "Your email is already in used, Plz try another email",
+        });
+      }
+      let hashPasswordFromBcrypt = await hashUserPassword(data.password);
+      await db.User.create({
+        email: data.email,
+        password: hashPasswordFromBcrypt,
+        fullName: data.fullName,
+        address: data.address,
+        phoneNumber: data.phoneNumber,
+        gender: data.gender === "1" ? true : false,
+        roleId: data.roleId,
+        positionId: data.positionId,
+      });
+      resolve({
+        errCode: 0,
+        errMessage: "Ok",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   handleUserLogin: handleUserLogin,
   getAllUsers: getAllUsers,
+  createNewUser: createNewUser,
 };
