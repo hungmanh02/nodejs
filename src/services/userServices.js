@@ -197,6 +197,33 @@ let deleteUser = (userId) => {
     }
   });
 };
+// all code
+
+let getAllCodeService = (typeInput) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!typeInput) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing required paramaters !",
+        });
+      } else {
+        let res = {};
+        let allcodes = await db.Allcode.findAll({
+          where: {
+            type: typeInput,
+          },
+        });
+        res.errCode = 0;
+        res.errMessage = "success api all codes";
+        res.data = allcodes;
+        resolve(res);
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 module.exports = {
   handleUserLogin: handleUserLogin,
@@ -204,4 +231,5 @@ module.exports = {
   createNewUser: createNewUser,
   editUser: editUser,
   deleteUser: deleteUser,
+  getAllCodeService: getAllCodeService,
 };

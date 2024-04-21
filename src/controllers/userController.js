@@ -1,4 +1,5 @@
 import userServices from "../services/userServices";
+// users
 let handleGetAllUsers = async (req, res) => {
   let id = req.query.id; // ALL, SINGLE
   if (!id) {
@@ -56,10 +57,29 @@ let handleDeleteUser = async (req, res) => {
   let message = await userServices.deleteUser(req.body.id);
   return res.status(200).json(message);
 };
+// allcode
+let handleGetAllCode = async (req, res) => {
+  try {
+    let allcodes = await userServices.getAllCodeService(req.query.type);
+    return res.status(200).json({
+      errCode: 0,
+      errMessage: "Ok",
+      allcodes,
+    });
+  } catch (error) {
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: "Error from serve",
+    });
+  }
+};
 module.exports = {
+  //users
   handleLogin: handleLogin,
   handleGetAllUsers: handleGetAllUsers,
   handleCreateNewUser: handleCreateNewUser,
   handleEditUser: handleEditUser,
   handleDeleteUser: handleDeleteUser,
+  //allcode
+  handleGetAllCode: handleGetAllCode,
 };
