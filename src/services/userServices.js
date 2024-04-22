@@ -11,7 +11,7 @@ let handleUserLogin = (email, password) => {
       if (isUserExist) {
         // user already exist
         let user = await db.User.findOne({
-          attributes: ["email", "password", "roleId"],
+          attributes: ["email", "password", "fullName", "roleId"],
           where: {
             email: email,
           },
@@ -197,7 +197,7 @@ let deleteUser = (userId) => {
     }
   });
 };
-// all code
+// allcodes
 
 let getAllCodeService = (typeInput) => {
   return new Promise(async (resolve, reject) => {
