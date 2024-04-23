@@ -208,16 +208,17 @@ let getAllCodeService = (typeInput) => {
           errMessage: "Missing required paramaters !",
         });
       } else {
-        let res = {};
         let allcodes = await db.Allcode.findAll({
           where: {
             type: typeInput,
           },
         });
-        res.errCode = 0;
-        res.errMessage = "success api all codes";
-        res.data = allcodes;
-        resolve(res);
+
+        resolve({
+          errCode: 0,
+          errMessage: "success api all codes",
+          data: allcodes,
+        });
       }
     } catch (error) {
       reject(error);
