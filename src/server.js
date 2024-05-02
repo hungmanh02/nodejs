@@ -31,9 +31,10 @@ app.use(function (req, res, next) {
   next();
 });
 // config app
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(cors({ origin: true, credentials: true }));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb" }));
 
 viewEngine(app);
 initWebRoutes(app);
