@@ -152,6 +152,9 @@ let editUser = (data) => {
         user.roleId = data.roleId;
         user.gender = data.gender;
         user.positionId = data.positionId;
+        if (user.image) {
+          user.image = data.image;
+        }
 
         await user.save();
         resolve({
