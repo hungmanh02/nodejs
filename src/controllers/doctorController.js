@@ -41,13 +41,15 @@ let postInforDoctor = async (req, res) => {
 let getDetailDoctorById = async (req, res) => {
   try {
     if (!req.query.id) {
+      // console.log(req.query.id);
       return res.status(200).json({
         errCode: 2,
         errMessage: "Missing required query id",
       });
+    } else {
+      let infor = await doctorService.getDetailDoctorByIdService(req.query.id);
+      return res.status(200).json(infor);
     }
-    let infor = await doctorService.getDetailDoctorByIdService(req.query.id);
-    return res.status(200).json(infor);
   } catch (e) {
     return res.status(200).json({
       errCode: -1,
