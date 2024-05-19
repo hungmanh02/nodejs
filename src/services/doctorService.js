@@ -1,5 +1,5 @@
+import _ from "lodash";
 import db from "../models/index";
-import { raw } from "body-parser";
 require('dotenv').config();
 const MAX_NUMBER_SCHEDULE=process.env.MAX_NUMBER_SCHEDULE;
 let getTopDoctorHomeService = (limitInput) => {
@@ -150,7 +150,7 @@ let getDetailDoctorByIdService = (inputId) => {
 let bulkCreateScheduleService=(data)=>{
   return new Promise( async(resolve,reject)=>{
     try {
-      if(!data.arrSchedule){
+      if(!data.arrSchedule || !data.doctorId || !data.formatedDate){
         resolve({
           errCode:1,
           errMessage:"Missing required parameter !"
@@ -163,7 +163,27 @@ let bulkCreateScheduleService=(data)=>{
             return item;
           })
         }
-        await db.Schedule.bulkCreate(schedule);
+        
+        let existing= await db.Schedule.findAll({
+          where:{doctorId:data.doctorId, date:data.formatedDate},
+          attributes:['timeType','date','doctorId','maxNumber'],
+          raw:true
+        })
+        //convert date
+        if(existing && existing.length >0){
+          existing=existing.map(item=>{
+            item.date= new Date(item.date).getTime();
+          return item;
+          })
+        }
+        // compare difference
+        let toCreate= _.differenceWith(schedule,existing,(a,b)=>{
+          return a.timeType===b.timeType && a.date===b.date;
+        });
+        // create data
+        if(toCreate && toCreate.length >0){
+           await db.Schedule.bulkCreate(toCreate);
+        }
         resolve({
           errCode:0,
           errMessage:"Ok"
