@@ -1,6 +1,7 @@
-import { where } from "sequelize";
 import db from "../models/index";
 import { raw } from "body-parser";
+require('dotenv').config();
+const MAX_NUMBER_SCHEDULE=process.env.MAX_NUMBER_SCHEDULE;
 let getTopDoctorHomeService = (limitInput) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -146,9 +147,38 @@ let getDetailDoctorByIdService = (inputId) => {
     }
   });
 };
+let bulkCreateScheduleService=(data)=>{
+  return new Promise( async(resolve,reject)=>{
+    try {
+      if(!data.arrSchedule){
+        resolve({
+          errCode:1,
+          errMessage:"Missing required parameter !"
+        })
+      }else{
+        let schedule=data.arrSchedule;
+        if(schedule && schedule.length>0){
+          schedule=schedule.map(item=>{
+            item.maxNumber=MAX_NUMBER_SCHEDULE;
+            return item;
+          })
+        }
+        await db.Schedule.bulkCreate(schedule);
+        resolve({
+          errCode:0,
+          errMessage:"Ok"
+        })
+      }
+    } catch (e) {
+      reject(e)
+    }
+  });
+
+};
 module.exports = {
   getTopDoctorHomeService: getTopDoctorHomeService,
   getAllDoctorService: getAllDoctorService,
   saveDetailInforDoctorService: saveDetailInforDoctorService,
   getDetailDoctorByIdService: getDetailDoctorByIdService,
+  bulkCreateScheduleService:bulkCreateScheduleService
 };
