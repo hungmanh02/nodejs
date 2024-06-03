@@ -14,15 +14,15 @@ module.exports = (sequelize, DataTypes) => {
       });
       Doctor_Infor.belongsTo(models.Allcode, {
         foreignKey: "priceId",
-        targetKey:"keyMap" ,as :"priceIdData"
+        as:"priceIdData"
       });
       Doctor_Infor.belongsTo(models.Allcode, {
         foreignKey: "paymentId",
-        targetKey:"keyMap" ,as :"paymentIdData"
+        as:"paymentIdData"
       });
       Doctor_Infor.belongsTo(models.Allcode, {
-        foreignKey: "provinceId",
-        targetKey:"keyMap" ,as :"provinceIdData"
+        foreignKey:"provinceId",
+        as:"provinceIdData"
       });
     }
   }
