@@ -98,6 +98,20 @@ let getExtraInforDoctorById= async (req,res)=>{
       });
     }
 }
+
+let getProfileInforDoctorById= async (req,res)=>{
+   try {
+      
+    let getProfileInfor = await doctorService.getProfileInforDoctorByIdService(req.query.id);
+    return res.status(200).json(getProfileInfor);
+  
+    } catch (e) {
+      return res.status(200).json({
+        errCode: -1,
+        errMessage: "Error from the server",
+      });
+    }
+}
 module.exports = {
   getTopDoctorHome: getTopDoctorHome,
   getAllDoctor: getAllDoctor,
@@ -105,5 +119,6 @@ module.exports = {
   getDetailDoctorById: getDetailDoctorById,
   bulkCreateSchedule:bulkCreateSchedule,
   getScheduleDoctorByDate:getScheduleDoctorByDate,
-  getExtraInforDoctorById:getExtraInforDoctorById
+  getExtraInforDoctorById:getExtraInforDoctorById,
+  getProfileInforDoctorById:getProfileInforDoctorById
 };

@@ -329,6 +329,79 @@ let getExtraInforDoctorByIdService=(idInput)=>{
   })
 
 }
+
+let getProfileInforDoctorByIdService=(inputId)=>{
+  return new Promise( async (resolve, reject)=>{
+    try {
+      if(!inputId){
+        resolve({
+          errCode:1,
+          errMessage:"Missing required parameters !"
+        })
+      }else{
+         let dataProfileDoctor = await db.User.findOne({
+          where: {
+            id: inputId,
+          },
+          attributes: {
+            exclude: ["password"],
+          },
+          include: [
+             {
+              model: db.Markdown,
+              attributes: ["description", "contentHtml", "contentMarkdown"],
+            },
+            {
+              model: db.Allcode,
+              as: "positionData",
+              attributes: ["valueEn", "valueVi"],
+            },
+             {
+              model: db.Doctor_Infor,
+              attributes:  {
+                exclude: ["id","doctorId"],
+              },
+              include:[
+                {
+                  model: db.Allcode,
+                  as: "priceIdData",
+                  attributes: ["valueEn", "valueVi"],
+                },
+                {
+                  model: db.Allcode,
+                  as: "paymentIdData",
+                  attributes: ["valueEn", "valueVi"],
+                },
+                {
+                  model: db.Allcode,
+                  as: "provinceIdData",
+                  attributes: ["valueEn", "valueVi"],
+                },
+              ]
+            }
+          ],
+          raw: false,
+          nest: true,
+        });
+        if (dataProfileDoctor && dataProfileDoctor.image) {
+          dataProfileDoctor.image = new Buffer(
+            dataProfileDoctor.image,
+            "base64"
+          ).toString("binary");
+        }
+        if (!dataProfileDoctor) data = {};
+        resolve({
+          errCode: 0,
+          data: dataProfileDoctor,
+        });
+      }
+      
+    }  catch (e) {
+      reject(e)
+    }
+  })
+
+}
 module.exports = {
   getTopDoctorHomeService: getTopDoctorHomeService,
   getAllDoctorService: getAllDoctorService,
@@ -336,5 +409,6 @@ module.exports = {
   getDetailDoctorByIdService: getDetailDoctorByIdService,
   bulkCreateScheduleService:bulkCreateScheduleService,
   getScheduleDoctorByDateService:getScheduleDoctorByDateService,
-  getExtraInforDoctorByIdService:getExtraInforDoctorByIdService
+  getExtraInforDoctorByIdService:getExtraInforDoctorByIdService,
+  getProfileInforDoctorByIdService:getProfileInforDoctorByIdService
 };
